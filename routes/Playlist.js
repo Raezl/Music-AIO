@@ -13,9 +13,12 @@ router.post('/', (req, res) =>{
         userId: req.body.userId,
         name: req.body.name,
         desc: req.body.desc,
-        songs: [
-            {source : req.body.source , url : req.body.url}
-        ]
+        songs: req.body.songs.map(song => {
+            return{
+                source : song.source,
+                url : song.url
+            };
+        })
     });
     playlist.save()
     .then(data => {
