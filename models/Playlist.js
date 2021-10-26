@@ -5,33 +5,21 @@ mongoose.connect(process.env.DB_CONNECTION, () =>
     console.log('DB connected')
 );
 
-const IdSchema =  mongoose.Schema({
-    userId:{
-        type: String,
-        required: true
-    },
-    playlistId:{
-        type: String,
-        required: true
-    }
-});
-
-const Song = mongoose.Schema({
+const SONG = mongoose.Schema({
     source: String,
     url: String
 });
 
 
 
-const PlaylistSchema =  mongoose.Schema({
-    id:{
-        type: IdSchema
+const PLAYLIST_SCHEMA =  mongoose.Schema({
+    userId:{
+        type: String,
+        required: true
     },
     name: String,
     desc: String,
-    songs: {
-        type: [Song]
-    }
+    songs:[SONG]   
 });
 
-module.exports = mongoose.model('Playlist', PlaylistSchema);
+module.exports = mongoose.model('Playlist', PLAYLIST_SCHEMA);
