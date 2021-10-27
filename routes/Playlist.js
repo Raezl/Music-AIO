@@ -1,32 +1,11 @@
 const express = require('express');
-const Playlist =require('../models/Playlist');
+const playlist_controller = require('../controllers/playlistController');
 const router = express.Router();
 
 //GET routes 
-router.get('/', (req,res) => {
-    res.send('Show Playlist');
-});
+router.get('/', playlist_controller.view_playlist);
 
-//POST routes
-router.post('/', (req, res) =>{
-    const playlist = new Playlist({
-        userId: req.body.userId,
-        name: req.body.name,
-        desc: req.body.desc,
-        songs: req.body.songs.map(song => {
-            return{
-                source : song.source,
-                url : song.url
-            };
-        })
-    });
-    playlist.save()
-    .then(data => {
-        res.json(data);
-    })
-    .catch( err => {
-        res.json({message: err});
-    });
-});
+//POST routes 
+router.post('/', playlist_controller.add_playlist);
 
 module.exports = router;
