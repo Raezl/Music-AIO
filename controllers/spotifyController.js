@@ -1,8 +1,8 @@
 
 require('dotenv').config();
 const crypto = require('crypto');
-const querystring = require('querystring');
 const client_id = process.env.SCLIENT_ID;
+const client_secret = process.env.SCLIENT_SECRET;
 const redirect_uri = process.env.S_REDIRECT;
 
 
@@ -50,7 +50,8 @@ exports.callBack = function (req, res) {
                 grant_type: 'authorization_code'
             },
             headers: {
-                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')),
+                'Content-Type' : 'application/x-www-form-urlencoded'
             },
             json: true
         };
