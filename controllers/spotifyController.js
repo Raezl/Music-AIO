@@ -6,11 +6,11 @@ const client_id = process.env.SCLIENT_ID;
 const redirect_uri = process.env.S_REDIRECT;
 
 
-function generateRandomString(length){
+function generateRandomString(length) {
     return crypto.randomBytes(length).toString('hex');
 };
 
-function hashCode(code){
+function hashCode(code) {
     return crypto.createHash('sha256').update(code).digest('base64');
 }
 exports.getAuthorization = function (req, res) {
@@ -20,7 +20,7 @@ exports.getAuthorization = function (req, res) {
     let scope = 'user-read-private playlist-read-private';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
-        querystring.stringify({
+        new URLSearchParams({
             response_type: 'code',
             client_id: client_id,
             scope: scope,
