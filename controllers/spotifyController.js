@@ -13,8 +13,8 @@ function generateRandomString(length) {
 function hashCode(code) {
     return crypto.createHash('sha256').update(code).digest('base64');
 }
-exports.getAuthorization = function (req, res) {
 
+exports.getAuthorization = function (req, res) {
     let state = generateRandomString(16);
     let code_challenge = hashCode(generateRandomString(128));
     let scope = 'user-read-private playlist-read-private';
@@ -29,4 +29,30 @@ exports.getAuthorization = function (req, res) {
             code_challenge_method: 'S256',
             code_challenge: code_challenge
         }));
-};
+}
+
+exports.callBack = function (req, res) {
+
+    let code = req.query.code || null;
+    let state = req.query.state || null;
+
+    if (state === null) {
+        res.redirect('/#' +
+            new URLSearchParams({
+                error: 'state_mismatch'
+            }));
+    } else {
+        var authOptions = {
+            url: 'https://accounts.spotify.com/api/token',
+            form: {
+                code: code,
+                redirect_uri: redirect_uri,
+                grant_type: 'authorization_code'
+            },
+            headers: {
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+            },
+            json: true
+        };
+    }
+}
