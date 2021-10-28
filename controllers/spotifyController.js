@@ -14,7 +14,7 @@ function hashCode(code) {
     return crypto.createHash('sha256').update(code).digest('base64');
 }
 
-exports.getAuthorization = function (req, res) {
+exports.spotify_oauth = function (req, res) {
     let state = generateRandomString(16);
     let code_challenge = hashCode(generateRandomString(128));
     let scope = 'user-read-private playlist-read-private';
@@ -31,13 +31,13 @@ exports.getAuthorization = function (req, res) {
         }));
 }
 
-exports.callBack = function (req, res) {
+exports.authorise = function (req, res) {
 
     let code = req.query.code || null;
     let state = req.query.state || null;
 
     if (state === null) {
-        res.redirect('/#' +
+        res.redirect('/status' +
             new URLSearchParams({
                 error: 'state_mismatch'
             }));
@@ -50,10 +50,18 @@ exports.callBack = function (req, res) {
                 grant_type: 'authorization_code'
             },
             headers: {
-                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')),
+                'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64')),
                 'Content-Type' : 'application/x-www-form-urlencoded'
             },
             json: true
         };
+        res.post(authOptions, function(err, res, body){
+            if (!error && response.statusCode === 200) {
+                var access_token = body.access_token;
+                res.send({
+                  'access_token': access_token
+                });
+              }
+        })
     }
 }
