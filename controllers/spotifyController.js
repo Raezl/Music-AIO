@@ -1,6 +1,8 @@
 
 require('dotenv').config();
+const { rejects } = require('assert');
 const crypto = require('crypto');
+const { resolve } = require('path');
 const client_id = process.env.SCLIENT_ID;
 const client_secret = process.env.SCLIENT_SECRET;
 const redirect_uri = process.env.S_REDIRECT;
@@ -28,40 +30,18 @@ exports.spotify_oauth = function (req, res) {
             state: state,
             code_challenge_method: 'S256',
             code_challenge: code_challenge
-        }));
+        })), function(req, res){
+            let code = req.query.code || null;
+            let state = req.query.state || null;
+            console.log(code);
+        };
 }
 
-exports.authorise = function (req, res) {
 
-    let code = req.query.code || null;
-    let state = req.query.state || null;
 
-    if (state === null) {
-        res.redirect('/status' +
-            new URLSearchParams({
-                error: 'state_mismatch'
-            }));
-    } else {
-        var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            form: {
-                code: code,
-                redirect_uri: redirect_uri,
-                grant_type: 'authorization_code'
-            },
-            headers: {
-                'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64')),
-                'Content-Type' : 'application/x-www-form-urlencoded'
-            },
-            json: true
-        };
-        res.post(authOptions, function(err, res, body){
-            if (!error && response.statusCode === 200) {
-                var access_token = body.access_token;
-                res.send({
-                  'access_token': access_token
-                });
-              }
-        })
-    }
+exports.spotify_authorise = function (req, res) {
+}
+
+exports.spotify_token = function (req, res) {
+
 }
