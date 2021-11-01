@@ -1,7 +1,9 @@
 
 require('dotenv').config();
 const { rejects } = require('assert');
+const { default: axios } = require('axios');
 const crypto = require('crypto');
+const { request } = require('http');
 const { resolve } = require('path');
 const client_id = process.env.SCLIENT_ID;
 const client_secret = process.env.SCLIENT_SECRET;
@@ -18,7 +20,6 @@ function hashCode(code) {
 
 exports.spotify_oauth = function (req, res) {
     let state = generateRandomString(16);
-    let code_challenge = hashCode(generateRandomString(128));
     let scope = 'user-read-private playlist-read-private';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
@@ -28,20 +29,34 @@ exports.spotify_oauth = function (req, res) {
             scope: scope,
             redirect_uri: redirect_uri,
             state: state,
-            code_challenge_method: 'S256',
-            code_challenge: code_challenge
-        })), function(req, res){
-            let code = req.query.code || null;
-            let state = req.query.state || null;
-            console.log(code);
-        };
+        })
+    )
 }
 
 
 
 exports.spotify_authorise = function (req, res) {
-}
+    let code = req.query.code || null;
+    let state = req.query.state || null;
 
-exports.spotify_token = function (req, res) {
-
+    if(state === null){
+        console.log('state mismatch');
+    }else{
+        const body = {
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: process.env.S_REDIRECT
+        }
+        const headers ={
+            headers: {
+               'Authorization':  'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64')) ,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }
+        axios.post('https://accounts.spotify.com/api/token', body, headers)
+        .then((_res) => res.data.access_token)
+        .then((token) =>{
+            console.log(token);
+        })
+    }
 }
