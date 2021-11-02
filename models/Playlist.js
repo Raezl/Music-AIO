@@ -5,22 +5,21 @@ mongoose.connect(process.env.DB_CONNECTION, () =>
     console.log('DB connected')
 );
 
-
-const song = mongoose.Schema({
+const SONG = mongoose.Schema({
     source: String,
     url: String
 });
 
 
 
-const playlist_schema =  mongoose.Schema({
+const PLAYLIST_SCHEMA =  mongoose.Schema({
     userId:{
         type: String,
         required: true
     },
     name: String,
     desc: String,
-    songs:[song]   
+    songs:[SONG]   
 });
 
-module.exports = mongoose.model('Playlist', playlist_schema);
+module.exports = mongoose.model('Playlist', PLAYLIST_SCHEMA);

@@ -1,13 +1,11 @@
-const PLAYLIST =require('../models/playlistModel');
+const PLAYLIST =require('../models/Playlist');
 
 
-//View user created playlists
+
 exports.view_playlist = function(req, res){
     res.send('working');
 };
 
-
-//Add new user playlist 
 exports.add_playlist = function(req, res){
     const playlist = new PLAYLIST({
         userId: req.body.userId,
