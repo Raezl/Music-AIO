@@ -1,10 +1,7 @@
 
 require('dotenv').config();
-const { rejects } = require('assert');
 const { default: axios } = require('axios');
 const crypto = require('crypto');
-const { request } = require('http');
-const { resolve } = require('path');
 const client_id = process.env.SCLIENT_ID;
 const client_secret = process.env.SCLIENT_SECRET;
 const redirect_uri = process.env.S_REDIRECT;
