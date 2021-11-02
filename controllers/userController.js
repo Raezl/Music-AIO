@@ -2,7 +2,7 @@ const USER = require('../models/usersModel');
 
 //Find username
 exports.login = function (req, res){
-    res.status(200).send('log in');
+    res.send('log in');
 };
 
 //Add new user 
@@ -12,11 +12,11 @@ exports.register = function (req, res){
         password: req.body.password
     });
     user.save()
-    .then(
-        res.status(200).send('User Registered')
-    )
+    .then(data =>{
+        res.json(data);
+    })
     .catch(err => {
-        res.status(400).send(err);
+        res.json({messege: err});
     });
 };
 
