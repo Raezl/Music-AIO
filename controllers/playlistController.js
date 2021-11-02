@@ -1,4 +1,5 @@
-const PLAYLIST =require('../models/playlistModel');
+const Playlist = require('../models/playlistModel');
+
 
 
 //View user created playlists
@@ -9,7 +10,7 @@ exports.view_playlist = function(req, res){
 
 //Add new user playlist 
 exports.add_playlist = function(req, res){
-    const playlist = new PLAYLIST({
+    const playlist = new Playlist({
         userId: req.body.userId,
         name: req.body.name,
         desc: req.body.desc,
@@ -20,11 +21,14 @@ exports.add_playlist = function(req, res){
             };
         })
     });
+
     playlist.save()
     .then(data => {
         res.json(data);
     })
     .catch( err => {
         res.json({message: err});
+        console.log(err.stack);
     });
+    
 };

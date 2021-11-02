@@ -1,7 +1,16 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 require('dotenv/config');
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.DB_CONNECTION)
+    .then(
+        () => console.log('DB connected'),
+        err => console.log(err)
+    ).catch(err => {
+        console.log(err)
+    }
+    );
 
 //Routes
 const playlistRoute = require('./routes/playlistRoute');

@@ -1,11 +1,5 @@
 const mongoose = require('mongoose');
 
-//connect to db
-mongoose.connect(process.env.DB_CONNECTION, () => 
-    console.log('DB connected')
-);
-
-
 const song = mongoose.Schema({
     source: String,
     url: String
