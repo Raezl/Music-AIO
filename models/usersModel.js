@@ -13,7 +13,11 @@ const user_schema = mongoose.Schema({
     sources:[{
         source: String,
         token: String,
-    }]
+    }],
+    date: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 

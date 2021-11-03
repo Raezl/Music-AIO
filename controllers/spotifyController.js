@@ -37,7 +37,7 @@ exports.spotify_authorise = function (req, res) {
     let state = req.query.state || null;
 
     if(state === null){
-        console.log('state mismatch');
+        res.staus('401');
     }else{
         const body = {
             grant_type: 'authorization_code',
