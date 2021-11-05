@@ -20,7 +20,7 @@ exports.verifyPassword = (password, hash) => {
         crypto.scrypt(password, salt, 64, (err, derivedKey) => {
             if (err) reject(err);
             //protect against timing attacks when comparing the keys
-            resolve(crypto.timingSafeEqual(keyBuffer, derivedKey))
+            resolve(crypto.timingSafeEqual(keyBuffer, derivedKey));
         });
     });
 }
