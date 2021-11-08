@@ -1,13 +1,14 @@
 const USER = require('../models/usersModel');
 const userValidation = require('../validations/userValidation');
 const HASH = require('../hash');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Find user detail by email
 findUserByEmail = async (data) => {
     return USER.findOne({ email: data });
 }
-
 
 //Check for user and return jwt token
 exports.login = async function (req, res) {
@@ -15,15 +16,18 @@ exports.login = async function (req, res) {
         const user = await findUserByEmail(req.body.email);
         if (user === null) throw 'Email not found';
 
-        const hashedpassword = await HASH.genHash(req.body.password);
 
-        if (HASH.verifyPassword(req.body.password, hashedpassword)) {
-            //create jwt token 
-            const token = jwt.sign();
-            res.status(200).json({ message: 'Authenticated' });
+        const verified = await HASH.verifyPassword(req.body.password, user.password);
+        if (verified) {
+            //create jwt token
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_TOKEN);
+            res.header('token', token).json({ message: 'Token created' });
+        } else {
+            throw 'Invalid Password';
         }
+
     } catch (err) {
-        res.status(200).json({ message: err });
+        res.status(200).json({ message: err.message });
     }
 
 };
