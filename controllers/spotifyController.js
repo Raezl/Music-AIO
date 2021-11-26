@@ -35,25 +35,34 @@ exports.spotify_oauth = function (req, res) {
 exports.spotify_authorise = function (req, res) {
     let code = req.query.code || null;
     let state = req.query.state || null;
+    let error = req.query.error || null;
 
-    if (state === null) {
-        res.staus('401');
+    if (error) {
+        res.json({message: error});
     } else {
-        const body = {
+
+        const data = new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
             redirect_uri: process.env.S_REDIRECT
-        }
+        })
+        
         const headers = {
-            headers: {
                 'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64')),
                 'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            
         }
-        axios.post('https://accounts.spotify.com/api/token', body, headers)
-            .then((_res) => res.data.access_token)
-            .then((token) => {
-                console.log(token);
-            })
+
+        axios({
+            method: 'post',
+            url: 'https://accounts.spotify.com/api/token', 
+            headers: headers,
+            data: data
+        }).then(response =>{
+           res.json({status: response.status,
+            token : response.data.access_token,
+            refresh_token: response.data.refresh_token
+        }) 
+        })
     }
 }
