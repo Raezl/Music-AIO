@@ -21,13 +21,13 @@ exports.login = async function (req, res) {
         if (verified) {
             //create jwt token
             const token = jwt.sign({ _id: user._id }, process.env.JWT_TOKEN);
-            res.header('token', token).json({ message: 'Token created' });
+            res.header('token', token).json({ success: 'Token created' });
         } else {
             throw 'Invalid Password';
         }
 
     } catch (err) {
-        res.status(200).json({ message: err.message });
+        res.status(200).json({ error: err });
     }
 
 };
@@ -51,11 +51,15 @@ exports.register = async function (req, res) {
 
         //add new user to db
         const registred = await newUser.save();
-        if (registred) return res.status(200).json({ message: 'Authorised' });
+        if (registred) return res.status(200).json({ success: 'Authorised' });
 
     } catch (err) {
-        res.status(200).json({ message: err });
+        res.status(200).json({ error: err });
     }
+}
+
+exports.updateUser = async function (req, res){
+    console.log(req.data);
 }
 
 
