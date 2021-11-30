@@ -1,5 +1,6 @@
 
 require('dotenv').config();
+const TOKENS = require('../controllers/tokenController');
 const { default: axios } = require('axios');
 const client_id = process.env.SCLIENT_ID;
 const client_secret = process.env.SCLIENT_SECRET;
@@ -30,6 +31,10 @@ exports.spotify_authorise = function (req, res) {
             token: response.data.access_token,
             expires_in: expire_date
         }
+        return newToken;
+    }).then((token)=>{
+        //Update token
+        TOKENS.setTokens(token);
     }).catch(err => {
         res.json({ error: err });
     });
