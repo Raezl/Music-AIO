@@ -1,12 +1,11 @@
 
 const TOKENS = require('../models/extTokenModel');
 
-exports.getToken = function (id) {
-    return TOKENS.findOne({ source: id });
+exports.getToken = async function (data) {
+    return await TOKENS.findOne({ source: data });
 }
 
 exports.setTokens = async function (data) {
-
     try {
         const newToken = {
             source: data.source,
@@ -16,7 +15,7 @@ exports.setTokens = async function (data) {
 
         const tokenUpdate = await TOKENS.findOneAndUpdate({ source: data.source }, newToken, { upsert: true });
 
-        if (tokenUpdate) console.log('Updated token');
+        if (tokenUpdate) console.log('Updated token: ' + data.token + 'exp: ' + data.expires_in);
 
     } catch (err) {
         console.log(err);
